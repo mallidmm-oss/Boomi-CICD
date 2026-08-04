@@ -1,0 +1,55 @@
+name: Boomi CI-CD Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Boomi CLI
+        run: |
+          npm install -g boomi-cli
+
+      - name: Install Project Dependencies
+        run: |
+          npm ci
+
+      - name: Build Project
+        run: |
+          npm run build
+
+      - name: Configure Boomi Credentials
+        env:
+          BOOMI_ACCOUNT_ID: ${{ secrets.BOOMI_ACCOUNT_ID }}
+          BOOMI_USERNAME: ${{ secrets.BOOMI_USERNAME }}
+          BOOMI_TOKEN: ${{ secrets.BOOMI_TOKEN }}
+        run: |
+          boomi account login \
+            --accountId "${BOOMI_ACCOUNT_ID}" \
+            --username "${BOOMI_USERNAME}" \
+            --password "${BOOMI_TOKEN}"
+
+      - name: Package Boomi Deployment
+        run: |
+          boomi package \
+            --source . \
+            --output ./boomi-package.zip
+
+      - name: Deploy to Boomi
+        run: |
+          boomi deploy \
+            --package ./boomi-package.zip \
+            --environment "${{ secrets.BOOMI_ENVIRONMENT }}"
+            
