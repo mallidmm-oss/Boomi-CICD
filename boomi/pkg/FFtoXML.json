@@ -1,1 +1,16 @@
 
+{
+    "schema": "1.0",
+    "packageversion": "1.0",
+    "component" : [
+    {
+        "name": "FFtoXML",
+        "type" :"Process",
+        "description": "Converts Flat File to XML",
+        "componentid": "c5ebfc6f-0286-495f-aa5e-5b8b2d0feb67",
+        "revision": 14,
+        "ignore": false
+        
+    }
+]
+}
