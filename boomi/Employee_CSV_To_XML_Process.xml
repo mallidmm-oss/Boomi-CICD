@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><Component xmlns:bns="http://api.platform.boomi.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" branchId="QjoyNTIxNDg" branchName="main" componentId="c5ebfc6f-0286-495f-aa5e-5b8b2d0feb67" createdBy="mallikarjuna.kalimisetty@cognizant.com" createdDate="2020-03-25T08:45:51Z" currentVersion="true" deleted="false" folderFullPath="Training-Mallikarjuna-Kalimisetty/DellBoomi/Employee_CSV_To_XML" folderId="RjozMTc0NTE5" folderName="Employee_CSV_To_XML" modifiedBy="mallikarjuna.kalimisetty@cognizant.com" modifiedDate="2026-08-03T23:18:53Z" name="Employee_CSV_To_XML_Process" type="process" version="14">
+  <bns:encryptedValues/>
+  <bns:description/>
+  <bns:object>
+    <process allowSimultaneous="false" enableUserLog="false" processLogOnErrorOnly="false" purgeDataImmediately="false" stopProcessingIfZeroDocuments="true" updateRunDates="true" workload="general">
+      <shapes>
+        <shape image="start" name="shape1" shapetype="start" userlabel="ReadFile" x="48.0" y="48.0">
+          <configuration>
+            <connectoraction actionType="Get" allowDynamicCredentials="NONE" connectionId="31ce8c0e-684a-4b7f-983e-e832f5c5c90e" connectorType="disk" hideSettings="false" operationId="8711efdb-842a-4282-bc6f-621b9b1c6420" parameter-profile="EMBEDDED|diskparameterchooser|8711efdb-842a-4282-bc6f-621b9b1c6420">
+              <parameters/>
+              <dynamicProperties/>
+            </connectoraction>
+          </configuration>
+          <dragpoints>
+            <dragpoint name="shape1.dragpoint1" toShape="shape15" x="144.0" y="136.0"/>
+          </dragpoints>
+        </shape>
+        <shape image="stop_icon" name="shape2" shapetype="stop" userlabel="" x="816.0" y="48.0">
+          <configuration>
+            <stop continue="true"/>
+          </configuration>
+          <dragpoints/>
+        </shape>
+        <shape image="connectoraction_icon" name="shape4" shapetype="connectoraction" userlabel="WriteFile" x="624.0" y="48.0">
+          <configuration>
+            <connectoraction actionType="Send" allowDynamicCredentials="NONE" connectionId="fc859c2f-9edb-482e-9874-a32fb9453b58" connectorType="disk" hideSettings="false" operationId="ca133340-3e69-4fad-bf11-37b647ae0b6f">
+              <parameters/>
+            </connectoraction>
+          </configuration>
+          <dragpoints>
+            <dragpoint name="shape4.dragpoint1" toShape="shape2" x="800.0" y="56.0"/>
+          </dragpoints>
+        </shape>
+        <shape image="map_icon" name="shape11" shapetype="map" userlabel="TranFormData" x="240.0" y="48.0">
+          <configuration>
+            <map mapId="675cbf8f-13df-4033-95da-6c7343c31e04"/>
+          </configuration>
+          <dragpoints>
+            <dragpoint name="shape11.dragpoint1" toShape="shape12" x="416.0" y="56.0"/>
+          </dragpoints>
+        </shape>
+        <shape image="documentproperties_icon" name="shape12" shapetype="documentproperties" userlabel="SetDiskProperties" x="432.0" y="48.0">
+          <configuration>
+            <documentproperties>
+              <documentproperty defaultValue="" isDynamicCredential="false" isTradingPartner="false" name="Disk - File Name" persist="false" propertyId="connector.disk.filename" shouldEncrypt="false">
+                <sourcevalues>
+                  <parametervalue key="1" valueType="static">
+                    <staticparameter staticproperty="EmpOut"/>
+                  </parametervalue>
+                  <parametervalue key="2" valueType="date">
+                    <dateparameter dateparametertype="current" datetimemask="MMddyyyy"/>
+                  </parametervalue>
+                  <parametervalue key="3" valueType="static">
+                    <staticparameter staticproperty=".xml"/>
+                  </parametervalue>
+                </sourcevalues>
+              </documentproperty>
+            </documentproperties>
+          </configuration>
+          <dragpoints>
+            <dragpoint name="shape12.dragpoint1" toShape="shape4" x="608.0" y="56.0"/>
+          </dragpoints>
+        </shape>
+        <shape image="catcherrors_icon" name="shape15" shapetype="catcherrors" userlabel="" x="160.0" y="128.0">
+          <configuration>
+            <catcherrors catchAll="false" retryCount="0"/>
+          </configuration>
+          <dragpoints>
+            <dragpoint identifier="default" name="shape15.dragpoint1" text="Try" toShape="shape11" x="224.0" y="56.0"/>
+            <dragpoint identifier="error" name="shape15.dragpoint2" text="Catch" toShape="shape16" x="240.0" y="264.0"/>
+          </dragpoints>
+        </shape>
+        <shape image="message_icon" name="shape16" shapetype="message" userlabel="" x="256.0" y="256.0">
+          <configuration>
+            <message combined="false">
+              <msgTxt>&lt;?xml version="1.0" encoding="UTF-8"&gt;
+&lt;error&gt;
+ &lt;serverity&gt;{1}&lt;/serverity&gt;
+
+&lt;/error&gt;</msgTxt>
+              <msgParameters>
+                <parametervalue key="0" valueType="static">
+                  <staticparameter staticproperty="Error"/>
+                </parametervalue>
+              </msgParameters>
+            </message>
+          </configuration>
+          <dragpoints>
+            <dragpoint name="shape16.dragpoint1" toShape="unset" x="390.0" y="267.0"/>
+          </dragpoints>
+        </shape>
+      </shapes>
+    </process>
+  </bns:object>
+  <bns:processOverrides/>
+</Component>
