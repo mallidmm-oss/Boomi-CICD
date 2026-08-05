@@ -41,15 +41,44 @@ jobs:
             --username "${BOOMI_USERNAME}" \
             --password "${BOOMI_TOKEN}"
 
-      - name: Package Boomi Deployment
+      - name: Create Boomi Package
+        env:
+          BOOMI_PROCESS_ID: ${{ secrets.BOOMI_PROCESS_ID }}
         run: |
-          boomi package \
-            --source . \
-            --output ./boomi-package.zip
+          boomi package create \
+            --componentId "${BOOMI_PROCESS_ID}" \
+            --version "1.0.${{ github.run_number }}"
+
+      - name: Create Package
+        id: package
+        run: |
+          COMPONENT_ID=$(jq -r '.componentId' boomi/pkg/FFtoXML.json)
+
+          RESPONSE=$(curl -X POST \
+            http://192.168.0.26:9090/ws/simple/getComponentXML \
+            -H "Content-Type: application/json" \
+            -d "{\"componentId\":\"$COMPONENT_ID\"}")
+
+          echo "$RESPONSE"
+
+          PACKAGE_ID=$(echo "$RESPONSE" | jq -r '.packageId')
+
+          echo "PACKAGE_ID=$PACKAGE_ID" >> "$GITHUB_ENV"
 
       - name: Deploy to Boomi
+        env:
+          BOOMI_ENVIRONMENT: ${{ secrets.BOOMI_ENVIRONMENT }}
         run: |
           boomi deploy \
             --package ./boomi-package.zip \
-            --environment "${{ secrets.BOOMI_ENVIRONMENT }}"
+            --environment "${BOOMI_ENVIRONMENT}"
+
+      - name: Activate Process
+        env:
+          BOOMI_PROCESS_ID: ${{ secrets.BOOMI_PROCESS_ID }}
+          BOOMI_ATOM_ID: ${{ vars.BOOMI_ATOM_ID }}
+        run: |
+          boomi process activate \
+            --processId "${BOOMI_PROCESS_ID}" \
+            --atomId "${BOOMI_ATOM_ID}"
             
